@@ -4,9 +4,14 @@ import sys
 class Birdy:
 
 	def __init__(self):
-		pass
-		title = self.title()
 		# init object
+
+		try:
+			self.deserialize_users()
+		except EOFError:
+			self.all_users = []
+
+		title = self.title()
 
 	def title(self):
 		print("#########################################")
@@ -15,7 +20,6 @@ class Birdy:
 
 	def menu(self):
 		# show menu of options, read user input response and use it to call appropriate method
-
 		self.options = "1. New User Account\n2. Select User\n3. View Chirps\n4. Public Chirp\n5. Private Chirp\n6. Exit"
 		print(self.options)
 		choice = input("> ")
@@ -24,6 +28,8 @@ class Birdy:
 			if int(choice) > 0 and int(choice) < 7:
 				if choice == "1":
 					print("1")
+					new_user = self.new_user()
+
 				elif choice == "2":
 					print("2")
 				elif choice == "3":
@@ -45,7 +51,16 @@ class Birdy:
 	def new_user(self):
 		# User choice 1: create new user, save fullname and screenname.
 		# Save to CSV. Then show menu (3-6).
-		pass
+		# pass
+
+		print("What is your full name?")
+		user_name = input("> ")
+		print("What would you like your screenname to be?")
+		screen_name = input("> ")
+		user = {"uid": "x", "user name": user_name, "screen name": screen_name}
+		self.all_users.append(user)
+		self.serialize()
+
 
 	def select_user(self):
 		# User choice 2: select from a menu of users, serving as a sign-in. Then show menu (3-6).
@@ -53,7 +68,7 @@ class Birdy:
 
 	def view_chirps(self):
 		# User choice 3: select which chirps to view - private or public.
-		# Then, give option to select a chirp. Selecting shows that chirp's
+		# Then, give option to select a chirp. Selecting shows that chirp"s
 		# thread, and options to reply or go back.
 		pass
 
@@ -68,6 +83,29 @@ class Birdy:
 		# Display chirp appropriately. Send to chirps.csv
 		pass
 
+	def serialize_users(self):
+		# saves users to disk
+		with open("users.csv", "ab+") as u:
+			pickle.dump(self.all_users, u)
+
+	def deserialize_users(self):
+		# opens users from disk and loads into memory. On error, creates the file.
+		try:
+			with open("users.csv", "rb") as u:
+				self.all_users = pickle.load(u)
+
+		except FileNotFoundError:
+			self.all_users = []
+
+
+		return self.all_users
+
+
+	def serialize_chirps(self):
+		pass
+
+	def deserialize_chirps(self):
+		pass
 
 
 if __name__ == "__main__":
