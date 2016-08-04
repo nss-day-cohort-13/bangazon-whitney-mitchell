@@ -10,12 +10,26 @@ class Test_birdy(unittest.TestCase):
 
 	@classmethod
 	def setUpClass(self):
-		self.birdy = Birdy()
+		self.birdy = Birdy("test-users.csv", "test-chirps.csv")
 
-	def test_new_user_creation(self):
+	# Do I need to test for deserialization? Error-handled, and it's in
+	# the init, which makes me think I don't.
+	def test_user_deserialization(self):
 		pass
 
-	def test_select_user_selects_correctly(self):
+	# New user tests
+	def test_new_user_creation(self):
+		a_user = self.birdy.new_user("Bob Roberts", "RiotGrrl77")
+		self.assertIs(a_user, self.birdy.user)
+		self.assertEqual("Bob Roberts", a_user["username"])
+		self.assertEqual("RiotGrrl77", a_user["screenname"])
+		self.assertIsNotNone(a_user["uid"])
+		self.assertIs(type(a_user), dict)
+
+	# Sign in tests
+	def test_sign_in_selects_correctly(self):
+		self.sign_in_choice = 1
+		self.assertEqual(self.birdy.sign_in(), "RiotGrrl77")
 		pass
 
 	def test_view_chirps(self):
